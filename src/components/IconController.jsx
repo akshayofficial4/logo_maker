@@ -1,13 +1,10 @@
-import { Smile } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Slider } from "@/components/ui/slider";
 import ColorPickerController from './ColorPickerController';
+import { UpdateStorageContext } from '@/context/UpdateStorageContext';
+import IconList from './IconList';
 
 function IconController() {
-    const [size, setSize] = useState(280);
-    const [rotate, setRotate] = useState(0);
-    const [color, setColor] = useState('#fff');
-    
     let storageValue;
 
     try {
@@ -17,6 +14,13 @@ function IconController() {
       storageValue = {}; // Fallback to an empty object if parsing fails
     }
 
+    const [size, setSize] = useState(storageValue?storageValue?.iconSize:280);
+    const [rotate, setRotate] = useState(storageValue?storageValue?.iconRotate:0);
+    const [color, setColor] = useState(storageValue?storageValue?.iconColor:"#fff");
+    const [icon, setIcon] = useState(storageValue?storageValue?.icon: "Smile");
+    const {updateStorage, setUpdateStorage} = useContext(UpdateStorageContext)
+
+
     useEffect(() => {
 
         const updatedValue = {
@@ -24,28 +28,27 @@ function IconController() {
             iconSize:size,
             iconRotate:rotate,
             iconColor:color,
-            icon:"Smile",
+            icon:icon,
         }
-
+        setUpdateStorage(updatedValue);
         localStorage.setItem('value',JSON.stringify(updatedValue))
       
-    }, [size, rotate, color])
+    }, [size, rotate, color,icon])
     
   return (
     <div>
       <div>
-        <label>Icon</label>
+        
+        {/*...Icon lists... */}
 
-        <div className='p-3 cursor-pointer bg-gray-200 rounded-md w-[50px] h-[50px] flex my-2 items-center justify-center '>
-            <Smile />
-        </div>
+        <IconList selectedIcon={(icon) => setIcon(icon)} />
 
         {/*...Slider for size...*/}
 
         <div className='py-2'>
 
             <label className='p-2 flex items-center justify-between'> Size <span>{size}px</span></label>
-            <Slider defaultValue={[280]} max={512} step={1} 
+            <Slider defaultValue={[size]} max={512} step={1} 
                 onValueChange={(event) => setSize(event[0])}
             />
 
@@ -56,7 +59,7 @@ function IconController() {
         <div className='py-2'>
 
             <label className='p-2 flex items-center justify-between'> Rotate <span>{rotate}°</span></label>
-            <Slider defaultValue={[0]} max={360} step={1} 
+            <Slider defaultValue={[rotate]} max={360} step={1} 
                 onValueChange={(event) => setRotate(event[0])}
             />
 

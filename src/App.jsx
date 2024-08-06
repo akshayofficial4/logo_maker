@@ -4,43 +4,49 @@ import Header from './components/Header';
 import SideNav from './components/SideNav';
 import IconController from './components/IconController';
 import BackgroundController from './components/BackgroundController';
+import LogoPreview from './components/LogoPreview';
+import { UpdateStorageContext } from './context/UpdateStorageContext';
 function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [ updateStorage, setUpdateStorage ] = useState({})
+  const [ downloadIcon, setDownloadIcon ] = useState()
   return (
-    <div>
-      <Header />
+    <UpdateStorageContext.Provider  value={{updateStorage, setUpdateStorage}}>
+        <div>
+          <Header DownloadIcon={setDownloadIcon} />
 
-      {/*...Side Bar... */}
+          {/*...Side Bar... */}
 
-      <div className='w-64 fixed '>
-        <SideNav selectedIndex={(value) => setSelectedIndex(value)} />
-      </div>
+          <div className='w-64 fixed '>
+            <SideNav selectedIndex={(value) => setSelectedIndex(value)} />
+          </div>
 
-      <div className='ml-64 grid grid-cols-1 md:grid-cols-6 fixed ' >
+          <div className='ml-64 grid grid-cols-1 md:grid-cols-6 fixed ' >
 
-      {/*...Control Panel.. */}
+          {/*...Control Panel.. */}
 
-        <div className='md:col-span-2 border h-screen p-5 shadow-sm overflow-auto'>
+            <div className='md:col-span-2 border h-screen p-5 shadow-sm overflow-auto'>
 
-          { selectedIndex == 0 ? <IconController /> : <BackgroundController /> }
+              { selectedIndex == 0 ? <IconController /> : <BackgroundController /> }
+
+            </div>
+
+          {/*...Icon Preview...*/}
+
+            <div className='md:col-span-3' >
+              <LogoPreview downloadIcon={downloadIcon} />
+            </div>
+
+          {/*...Adds Preview...*/}
+
+            <div className='' >
+              Adds preview
+            </div>
+            
+          </div>
 
         </div>
-
-      {/*...Icon Preview...*/}
-
-        <div className='md:col-span-3' >
-          icon preview...
-        </div>
-
-      {/*...Adds Preview...*/}
-
-        <div className='' >
-          Adds preview
-        </div>
-        
-      </div>
-
-    </div>
+    </UpdateStorageContext.Provider>
   )
 }
 
