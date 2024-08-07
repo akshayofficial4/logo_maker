@@ -1,7 +1,7 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
- 
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -9,16 +9,31 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-
-
-//creating a proxy server for downloading the png files as logos...
-
-server:{
-  port:'3333',
-  strictPort:true,
-  proxy:{
-    '/png':'https://logoexpress.tubeguruji.com',
-  }
-}
-
-})
+  server: {
+    port: 3333,
+    strictPort: true,
+    proxy: {
+      "/png": {
+        target: "https://logoexpress.tubeguruji.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/png/, "/png"),
+        // Ensure CORS headers are handled correctly
+        configure: (proxy, options) => {
+          proxy.on("proxyReq", (proxyReq, req, res) => {
+            proxyReq.setHeader("Origin", "https://logoexpress.tubeguruji.com");
+          });
+          proxy.on("proxyRes", (proxyRes, req, res) => {
+            const corsHeaders = {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            };
+            Object.keys(corsHeaders).forEach((key) => {
+              proxyRes.headers[key] = corsHeaders[key];
+            });
+          });
+        },
+      },
+    },
+  },
+});

@@ -7,7 +7,7 @@ const BASE_URL = "https://logoexpress.tubeguruji.com";
 
 function LogoPreview({ downloadIcon }) {
   const [storageValue, setStorageValue] = useState();
-  const { updateStorage, setUpdateStorage } = useContext(UpdateStorageContext);
+  const { updateStorage } = useContext(UpdateStorageContext);
 
   useEffect(() => {
     const storageData = JSON.parse(localStorage.getItem("value"));
@@ -24,13 +24,19 @@ function LogoPreview({ downloadIcon }) {
     const downloadLogoDiv = document.getElementById("downloadLogoDiv");
     html2canvas(downloadLogoDiv, {
       backgroundColor: null,
-    }).then((canvas) => {
-      const pngImage = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.href = pngImage;
-      downloadLink.download = "Logo_Maker.png";
-      downloadLink.click();
-    });
+      useCORS: true,
+      proxy: "/png",
+    })
+      .then((canvas) => {
+        const pngImage = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngImage;
+        downloadLink.download = "Logo_Maker.png";
+        downloadLink.click();
+      })
+      .catch((error) => {
+        console.error("Error capturing canvas:", error);
+      });
   };
 
   const Icon = ({ name, color, size, rotate }) => {
@@ -65,7 +71,8 @@ function LogoPreview({ downloadIcon }) {
             background: storageValue?.bgColor,
           }}
         >
-          {typeof storageValue?.icon === "string" && storageValue?.icon.includes("png") ? (
+          {typeof storageValue?.icon === "string" &&
+          storageValue?.icon.includes("png") ? (
             <img
               src={`${BASE_URL}/png/${storageValue.icon}`}
               alt=".."
