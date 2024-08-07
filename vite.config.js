@@ -9,4 +9,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
+
+//creating a proxy server for downloading the png files as logos...
+
+server:{
+  port:'3333',
+  strictPort:true,
+  proxy:{
+    '/png':'https://logoexpress.tubeguruji.com',
+  }
+}
+
 })
