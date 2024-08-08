@@ -14,13 +14,13 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       "/png": {
-        target: "https://logoexpress.tubeguruji.com",
+        target: "https://logo-maker-alpha.vercel.app/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/png/, "/png"),
         // Ensure CORS headers are handled correctly
         configure: (proxy, options) => {
           proxy.on("proxyReq", (proxyReq, req, res) => {
-            proxyReq.setHeader("Origin", "https://logoexpress.tubeguruji.com");
+            proxyReq.setHeader("Origin", "https://logo-maker-alpha.vercel.app/");
           });
           proxy.on("proxyRes", (proxyRes, req, res) => {
             const corsHeaders = {
