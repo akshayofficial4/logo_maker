@@ -5,7 +5,7 @@ import { Download, DownloadIcon } from "lucide-react";
 function Header({ DownloadIcon }) {
   return (
     <div className="p-4 shadow-sm border flex justify-between items-center">
-      <img src="./logo.svg" alt="..." />
+      <img src="./logo.svg" alt="..." w-10px h-4px />
       <Button
         className="flex gap-2 items-center"
         onClick={() => DownloadIcon(Date.now())}
